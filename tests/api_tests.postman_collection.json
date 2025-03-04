@@ -1,0 +1,66 @@
+{
+    "info": {
+      "_postman_id": "12345678-90ab-cdef-1234-567890abcdef",
+      "name": "EMONI API Tests",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "POST - Send Sensor Data",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n    \"device_id\": \"sensor_001\",\n    \"power_usage\": 3.5,\n    \"temperature\": 22.8,\n    \"co2\": 450\n}"
+          },
+          "url": {
+            "raw": "http://localhost:8000/sensor-data/",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "8000",
+            "path": ["sensor-data"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "GET - Fetch Sensor Data (Example)",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:8000/sensor-data/",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "8000",
+            "path": ["sensor-data"]
+          }
+        },
+        "response": []
+      }
+    ],
+    "event": [
+      {
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "pm.test(\"Response contains expected fields\", function () {",
+            "    var jsonData = pm.response.json();",
+            "    pm.expect(jsonData).to.have.property(\"status\");",
+            "});"
+          ],
+          "type": "text/javascript"
+        }
+      }
+    ]
+  }
+  

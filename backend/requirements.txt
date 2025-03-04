@@ -1,0 +1,9 @@
+fastapi==0.100.0
+uvicorn==0.22.0
+pydantic==1.10.7
+psycopg2-binary==2.9.6  # PostgreSQL adapter for Python
+paho-mqtt==1.6.1  # MQTT client for IoT data
+selenium==4.10.0  # For automated UI testing
+pytest==7.4.0  # For writing backend tests
+locust==2.15.1  # Load testing
+requests==2.31.0  # HTTP requests

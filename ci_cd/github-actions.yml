@@ -1,0 +1,13 @@
+name: CI/CD Tests
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run API Tests
+      run: newman run tests/api_tests.postman_collection.json
+    - name: Run UI Tests
+      run: python tests/ui_test.py
+    - name: Run Load Tests
+      run: locust -f tests/locustfile.py --headless -u 500 -r 10

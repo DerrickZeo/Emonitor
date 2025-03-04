@@ -1,0 +1,71 @@
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: fastapi_backend
+    restart: always
+    depends_on:
+      - db
+      - mqtt_broker
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+  mqtt_broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto_broker
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  mqtt_sensor:
+    build: ./backend
+    container_name: mqtt_sensor
+    restart: always
+    depends_on:
+      - mqtt_broker
+    environment:
+      - MQTT_BROKER=mosquitto_broker
+    command: python mqtt_sensor_simulator.py
+  
+  mqtt_subscriber:
+    build: ./backend
+    container_name: mqtt_subscriber
+    restart: always
+    depends_on:
+      - mqtt_broker
+      - db
+    environment:
+      - MQTT_BROKER=mosquitto_broker
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=energy_monitoring
+    command: python mqtt_subscriber.py
+
+volumes:
+  postgres_data:
